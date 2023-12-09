@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0",
+  "description": "Parse arguments with zero setup",
+  "repository": "https://github.com/midrare/naiveargs.ahk",
+  "website": "https://github.com/midrare/naiveargs.ahk",
+  "license": "MIT",
+  "issueTracker": "https://github.com/midrare/naiveargs.ahk/issues",
+  "include": "naiveargs.ahk",
+  "author": {
+    "name": "midrare",
+    "email": "midrare9@gmail.com",
+    "website": "https://github.com/midrare"
+  },
+  "dependencies": {}
+}
