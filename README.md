@@ -39,7 +39,7 @@ Get positionals using `GetPositionals()`. If there are no positionals, this retu
 Args.GetPositionals()  ; -> ["install"]
 ```
 
-Check flags using `GetCount(ParamName)`. Params that enable (e.g. `--dry-run`), disable (e.g. `--no-clobber`), or increment something (e.g. `-v`, `-q`) should be implemented this way. You can use `GetCount(ParamName)` even if the flag is not in the actual inputs (in this case it will just return `0`).
+Check flags using `GetCount(ParamName)`. If the param name is not present, this returns `0`. Params that enable (e.g. `--dry-run`), disable (e.g. `--no-clobber`), or increment something (e.g. `-v`, `-q`) should be implemented this way.
 
 ```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
@@ -50,7 +50,7 @@ Args.GetCount("v") + Args.GetCount("verbose")  ; -> 3
 Args.GetCount("q") + Args.GetCount("quiet")  ; -> 0
 ```
 
-Get the first value of a named param using `GetParam(ParamName)`. If the param name is not found, this returns `""`. To get all values, use `GetParams(ParamName)` (notice the "s"). If the param name is not found, this returns `[]`.
+Get the first value of a named param using `GetParam(ParamName)`. If the param name is not found, this returns `""`. To get all values, use `GetParams(ParamName)` (notice the "s"). If the param name is not found, this returns `[]`. Params that consist of a key-value(s) pair (e.g. `--output-dir DIR`, `--add-files a.txt b.txt c.txt`) should be implemented this way.
 
 ```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
