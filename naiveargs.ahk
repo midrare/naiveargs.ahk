@@ -73,6 +73,7 @@ NaiveParseArguments(Args) {
     PHASE_REMAINING := 2
     RE_PREFIX_EQ := "^(?!--$)(?:--?|/)([^:=]+)[:=](.+)"
     RE_PREFIX := "^(?!--$)(?:--?|/)(.+)"
+    NULL := "__NULL!071087752810144576446744986497598079572009891827!NULL__"
 
     Positionals := Array()
     NameToValues := Map()
@@ -94,22 +95,31 @@ NaiveParseArguments(Args) {
 
         ; TODO handle --no-aaa flags
         If (Phase == PHASE_FLAGS) {
-            Match := {}
+            Name := ""
+            Value := NULL
 
+            Match := {}
             If (RegExMatch(Arg, RE_PREFIX_EQ, &Match) > 0) {
                 Name := Match[1]
                 Value := Match[2]
-                NameToValues[Name] := [Value]
-                If (!NameToCount.Has(Name)) {
-                    NameToCount[Name] := 0
-                }
-                NameToCount[Name] := NameToCount[Name] + 1
             } Else If (RegExMatch(Arg, RE_PREFIX, &Match) > 0) {
                 Name := Match[1]
+            }
+
+            If (Name && StrLen(Name) > 0) {
                 If (!NameToCount.Has(Name)) {
                     NameToCount[Name] := 0
                 }
                 NameToCount[Name] := NameToCount[Name] + 1
+
+                If (!NameToValues.Has(Name)) {
+                    NameToValues[Name] := []
+                }
+
+                ; testing against null allows blank strings
+                If (Value != NULL) {
+                    NameToValues[Name].Push(Value)
+                }
 
                 While (Args_.Length > 0) {
                     If (Args_[1] == "--" || Args_[1] ~= RE_PREFIX) {
@@ -117,9 +127,6 @@ NaiveParseArguments(Args) {
                     }
 
                     Value := Args_.RemoveAt(1)
-                    If (!NameToValues.Has(Name)) {
-                        NameToValues[Name] := []
-                    }
                     NameToValues[Name].Push(Value)
                 }
             }
