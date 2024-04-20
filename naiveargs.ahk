@@ -58,7 +58,7 @@ Class NaiveArguments {
 
     GetParams(Name) {
         if (!this.NameToValues.Has(Name)) {
-            Return
+            Return []
         }
         Return this.NameToValues[Name]
     }
