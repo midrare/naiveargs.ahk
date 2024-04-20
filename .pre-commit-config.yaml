@@ -1,7 +1,7 @@
 fail_fast: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -9,7 +9,7 @@ repos:
       - id: mixed-line-ending
       - id: detect-private-key
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: 3.1.0
+    rev: v3.24.0
     hooks:
       - id: commitizen
       - id: commitizen-branch
