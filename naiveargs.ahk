@@ -100,6 +100,10 @@ NaiveParseArguments(Args) {
                 Name := Match[1]
                 Value := Match[2]
                 NameToValues[Name] := [Value]
+                If (!NameToCount.Has(Name)) {
+                    NameToCount[Name] := 0
+                }
+                NameToCount[Name] := NameToCount[Name] + 1
             } Else If (RegExMatch(Arg, RE_PREFIX, &Match) > 0) {
                 Name := Match[1]
                 If (!NameToCount.Has(Name)) {
