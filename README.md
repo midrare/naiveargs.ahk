@@ -24,7 +24,7 @@ Argument parsing proceeds through a sequence of heuristic-based stages.
 ### Using the parser
 Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments()`, which returns a `NaiveArguments` object.
 
-```ahk2
+```ahk
 #include "%A_ScriptDir%/naiveargs.ahk"
 
 ; no setup!
@@ -33,7 +33,7 @@ Args := NaiveParseArguments(A_Args)
 
 Get positionals using `GetPositionals()`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
 
-```ahk2
+```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
 ;          ^^^^^^^
 Args.GetPositionals()  ; -> ["install"]
@@ -41,7 +41,7 @@ Args.GetPositionals()  ; -> ["install"]
 
 Check flags using `GetCount(ParamName)`. Params that enable (e.g. `--dry-run`), disable (e.g. `--no-clobber`), or increment something (e.g. `-v`, `-q`) should be implemented this way. You can use `GetCount(ParamName)` even if the flag is not in the actual inputs (in this case it will just return `0`).
 
-```ahk2
+```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
 ;                  ^^^^^^^^^^^^^^^
 Args.GetCount("v") + Args.GetCount("verbose")  ; -> 3
@@ -52,7 +52,7 @@ Args.GetCount("q") + Args.GetCount("quiet")  ; -> 0
 
 Get the first value of a named param using `GetParam(ParamName)`. To get all values, use `GetParams(ParamName)` (notice the "s").
 
-```ahk2
+```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
 ;                                  ^^^^^^^^^^ ^
 Args.GetParam("requires")  ; -> "a"
@@ -64,7 +64,7 @@ Args.GetParams("requires")  ; -> ["a", "b", "c"]
 
 All arguments after a `--` are considered remaining args.
 
-```ahk2
+```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
 ;                                                             ^^ ^^^^^
 Args.GetRemaining()  ; -> ["x", "y", "z"]
