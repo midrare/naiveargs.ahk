@@ -50,7 +50,7 @@ Args.GetCount("v") + Args.GetCount("verbose")  ; -> 3
 Args.GetCount("q") + Args.GetCount("quiet")  ; -> 0
 ```
 
-Get the first value of a named param using `GetParam(ParamName)`. To get all values, use `GetParams(ParamName)` (notice the "s").
+Get the first value of a named param using `GetParam(ParamName)`. If the param name is not found, this returns `""`. To get all values, use `GetParams(ParamName)` (notice the "s"). If the param name is not found, this returns `[]`.
 
 ```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
