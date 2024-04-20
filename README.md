@@ -22,7 +22,7 @@ Argument parsing proceeds through a sequence of heuristic-based stages.
 
 
 ### Using the parser
-Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments()`, which returns a `NaiveArguments` object.
+Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments(A_Args)`, which returns a `NaiveArguments` object.
 
 ```ahk
 #include "%A_ScriptDir%/naiveargs.ahk"
