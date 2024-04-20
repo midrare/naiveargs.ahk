@@ -27,10 +27,10 @@
 
 Class NaiveArguments {
     __New(Positionals, Named, Counted, Remaining) {
-        this.Positionals := Positionals
-        this.NameToValues := Named
-        this.NameToCount := Counted
-        this.Remaining := Remaining
+        this.Positionals := Positionals || Array()
+        this.NameToValues := Named || Map()
+        this.NameToCount := Counted || Map()
+        this.Remaining := Remaining || Array()
     }
 
     GetPositionals() {
