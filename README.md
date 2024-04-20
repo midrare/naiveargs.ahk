@@ -31,7 +31,7 @@ Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments(A_A
 Args := NaiveParseArguments(A_Args)
 ```
 
-Get positionals using `GetPositionals()`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
+Get positionals using `GetPositionals()`. If there are no positionals, this returns `[]`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
 
 ```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
@@ -62,7 +62,7 @@ Args.GetParam("requires")  ; -> "a"
 Args.GetParams("requires")  ; -> ["a", "b", "c"]
 ```
 
-All arguments after a `--` are considered remaining args.
+All arguments after a `--` are considered remaining args. If there are no remaining args, this returns `[]`. Arguments that should not be handled by the arg parser should be implemented this way.
 
 ```ahk
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
