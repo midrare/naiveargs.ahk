@@ -12,5 +12,20 @@ repos:
     rev: v3.24.0
     hooks:
       - id: commitizen
+        stages: [ commit-msg ]
       - id: commitizen-branch
         stages: [ push ]
+  # - repo: https://github.com/pocc/pre-commit-hooks
+  #   rev: v1.3.5
+  #   hooks:
+  #     - id: clang-format
+  #       args: [ -i ]
+  # - repo: https://github.com/psf/black
+  #   rev: 24.3.0
+  #   hooks:
+  #     - id: black
+  # - repo: https://github.com/google/yapf
+  #   rev: v0.40.2
+  #   hooks:
+  #     - id: yapf
+  #       args: [ -i ]
