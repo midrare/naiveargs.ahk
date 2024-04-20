@@ -4,8 +4,8 @@
 ## Usage
 **naiveargs.ahk** is different from traditional arg parsers; there is no schema that the parser validates the input against. Instead, all inputs are valid, and the parser infers the schema from the inputs.
 
-Put `naiveargs.ahk` in the same folder as your main script, then import it using `#include "%A_ScriptDir%/naiveargs.ahk"`.
-<sub>Optional: install using [ahkpm](https://ahkpm.dev/)</sub>
+Put `naiveargs.ahk` in the same folder as your main script, then import it using `#include "%A_ScriptDir%/naiveargs.ahk"`.  
+<sub>Optional: install using [ahkpm](https://ahkpm.dev/)</sub>  
 
 ### How parsing works
 Argument parsing proceeds through a sequence of heuristic-based stages.
