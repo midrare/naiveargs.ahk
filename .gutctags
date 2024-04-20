@@ -1,0 +1,15 @@
+--exclude=*/.hookspace/*
+--exclude=*/build-*
+--exclude=*/build/*
+--exclude=*/build_*
+--exclude=*/cmake-build-*
+--exclude=*/cmake-build/*
+--exclude=*/cmake_build/*
+--exclude=*/cmake_build_*
+--exclude=*/dist/*
+--exclude=*/out/*
+--exclude=*/release/*
+--exclude=*/target/*
+--exclude=*/vcpkg/*
+--exclude=*/vcpkg_installed/*
+--exclude=*/vcpkg_installed/*
