@@ -23,6 +23,8 @@
 ; SOFTWARE.
 
 
+#Requires AutoHotkey >=2.0
+
 Class NaiveArguments {
     __New(Positionals, Named, Counted, Remaining) {
         this.Positionals := Positionals
