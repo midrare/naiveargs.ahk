@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parse arguments with zero setup",
   "repository": "https://github.com/midrare/naiveargs.ahk",
   "website": "https://github.com/midrare/naiveargs.ahk",

@@ -1,8 +1,8 @@
 ; naiveargs.ahk
 ; An argument parser for autohotkey
-; Last modified: 2023/12/08
+; Last modified: 2024/04/20
 
-; Copyright (c) 2023 midrare
+; Copyright (c) 2024 midrare
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a copy
 ; of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@
 Class NaiveArguments {
     __New(Positionals, Named, Counted, Remaining) {
         this.Positionals := Positionals
-        this.NameToValue := Named
+        this.NameToValues := Named
         this.NameToCount := Counted
         this.Remaining := Remaining
     }
@@ -47,10 +47,18 @@ Class NaiveArguments {
     }
 
     GetParam(Name) {
-        If (!this.NameToValue.Has(Name)) {
+        If (!this.NameToValues.Has(Name)
+                || this.NameToValues[Name].Length <= 0) {
             Return
         }
-        Return this.NameToValue[Name]
+        Return this.NameToValues[Name][1]
+    }
+
+    GetParams(Name) {
+        if (!this.NameToValues.Has(Name)) {
+            Return
+        }
+        Return this.NameToValues[Name]
     }
 }
 
@@ -61,9 +69,11 @@ NaiveParseArguments(Args) {
     PHASE_POSITIONAL := 0
     PHASE_FLAGS := 1
     PHASE_REMAINING := 2
+    RE_PREFIX_EQ := "^(?!--$)(?:--?|/)([^:=]+)[:=](.+)"
+    RE_PREFIX := "^(?!--$)(?:--?|/)(.+)"
 
     Positionals := Array()
-    NameToValue := Map()
+    NameToValues := Map()
     NameToCount := Map()
     Remaining := Array()
 
@@ -80,37 +90,32 @@ NaiveParseArguments(Args) {
             }
         }
 
+        ; TODO handle --no-aaa flags
         If (Phase == PHASE_FLAGS) {
             Match := {}
-            If (Arg ~= "^(--?|/)[^:=]+[:=].+") {
-                RegExMatch(Arg, "(?:--?|/)([^:=]+)[:=](.+)", &Match)
+
+            If (RegExMatch(Arg, RE_PREFIX_EQ, &Match) > 0) {
                 Name := Match[1]
                 Value := Match[2]
-                NameToValue[Name] := Value
-            } Else If (Arg != "--"
-                    && Args_.Length > 0
-                    && !(Args_[1] ~= "^(--?[^-]|/.|--$)")) {
-                RegExMatch(Arg, "(?:--?|/)(.+)", &Match)
-                Name := Match[1]
-                While (Args_.Length > 0
-                        && !(Args_[1] ~= "^(--?[^-]|/.|--$)")) {
-                    Value := Args_.RemoveAt(1)
-                    If (!NameToValue.Has(Name)) {
-                        NameToValue[Name] := Value
-                    } Else {
-                        If (!IsObject(NameToValue[Name])) {
-                            NameToValue[Name] := [ NameToValue[Name] ]
-                        }
-                        NameToValue[Name].Push(Value)
-                    }
-                }
-            } Else If (Arg ~= "^(?:^--?|/)") {
-                RegExMatch(Arg, "(?:--?|/)(.+)", &Match)
+                NameToValues[Name] := [Value]
+            } Else If (RegExMatch(Arg, RE_PREFIX, &Match) > 0) {
                 Name := Match[1]
                 If (!NameToCount.Has(Name)) {
                     NameToCount[Name] := 0
                 }
                 NameToCount[Name] := NameToCount[Name] + 1
+
+                While (Args_.Length > 0) {
+                    If (Args_[1] == "--" || Args_[1] ~= RE_PREFIX) {
+                        Break
+                    }
+
+                    Value := Args_.RemoveAt(1)
+                    If (!NameToValues.Has(Name)) {
+                        NameToValues[Name] := []
+                    }
+                    NameToValues[Name].Push(Value)
+                }
             }
         }
 
@@ -121,6 +126,6 @@ NaiveParseArguments(Args) {
         }
     }
 
-    Return NaiveArguments(Positionals, NameToValue, NameToCount, Remaining)
+    Return NaiveArguments(Positionals, NameToValues, NameToCount, Remaining)
 }
 
