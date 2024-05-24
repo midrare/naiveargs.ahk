@@ -12,13 +12,16 @@ Argument parsing proceeds through a sequence of heuristic-based stages.
 
 ```bash
 #        positionals         flags & named params              remaining
-#            vvv                     vvv                          vvv
+#         |--vvv--|------------------vvv---------------------|---vvv--
 > demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
 ```
 
- 1. If the argument is not prefixed (does not start with `/`, `-`, or `--`), the argument is added to the list of positionals. This continues until a prefixed arg is encountered or all arguments are exhausted.
- 2. An argument prefixed with `/`, `-`, or `--` is considered a parameter name. An argument without this prefix is considered a value. Upon encountering a param name, its seen count (i.e. `GetCount(ParamName)`) is increased by one. Upon encountering a value, the value is appended to an array (i.e. `GetParam(ParamName)` or `GetParams(ParamName)`) associated with the param name last encountered. This continues until `--` (full argument, not a prefix) is encountered or all arguments are exhausted.
- 3. Upon encountering a bare `--` argument, all remaining arguments are added to an array (i.e. `GetRemaining()`) and the arguments list is considered exhausted. (The `--` itself is not added.)
+ 1. Parse positionals.
+    Arguments not prefixed with `/`, `-`, or `--` are added to the list of positionals (i.e. the array in `.Positionals`. This continues until a prefixed arg is encountered or all arguments are exhausted.
+ 2. Parse named params.
+    An argument prefixed with `/`, `-`, or `--` is considered a param name. Upon encountering a param name, its seen count (i.e. the value returned by `.Count(ParamName)`) is increased by one. Immediately following a param name, arg(s) without this prefix are considered a value associated with the param name; the value is appended to the associated array (i.e. accessed by `.Param(ParamName)` or `.Params(ParamName)`). This continues until `--` (full argument, not a prefix) is encountered or all arguments are exhausted.
+ 3. Gather remaining args.
+    Upon encountering a bare `--` argument, all remaining arguments are added to an array (i.e. the array in`.Remaining`) and the arguments list is considered exhausted. (The `--` itself is not added.)
 
 
 ### Using the parser
@@ -31,42 +34,48 @@ Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments(A_A
 Args := NaiveParseArguments(A_Args)
 ```
 
-Get positionals using `GetPositionals()`. If there are no positionals, this returns `[]`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
+**Get positionals using `.Positionals`.** If there are no positionals, this returns `[]`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
 
 ```ahk
+;          vvvvvvv
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-;          ^^^^^^^
-Args.GetPositionals()  ; -> ["install"]
+Args.Positionals
+;   -> ["install"]
 ```
 
-Check flags using `GetCount(ParamName)`. If the param name is not present, this returns `0`. Params that enable (e.g. `--dry-run`), disable (e.g. `--no-clobber`), or increment something (e.g. `-v`, `-q`) should be implemented this way.
+**Check flags using `.Count(ParamName)`.** If the param name is not present, this returns `0`. Params that enable (e.g. `--dry-run`), disable (e.g. `--no-clobber`), or increment something (e.g. `-v`, `-q`) should be implemented this way.
 
 ```ahk
+;                  vvvvvvvvvvvvvvv
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-;                  ^^^^^^^^^^^^^^^
-Args.GetCount("v") + Args.GetCount("verbose")  ; -> 3
+Args.Count("v") + Args.Count("verbose")
+;   -> 3
 
+;                  (no -q or --quiet given)
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-Args.GetCount("q") + Args.GetCount("quiet")  ; -> 0
+Args.Count("q") + Args.Count("quiet")
+;   -> 0
 ```
 
-Get the first value of a named param using `GetParam(ParamName)`. If the param name is not found, this returns `""`. To get all values, use `GetParams(ParamName)` (notice the "s"). If the param name is not found, this returns `[]`. Params that consist of a key-value(s) pair (e.g. `--output-dir DIR`, `--add-files a.txt b.txt c.txt`) should be implemented this way.
+**Get the first value of a named param using `.Param(ParamName)`.** If the param name is not found, this returns `""`. **To get all values, use `.Params(ParamName)` (notice the "s").** If the param name is not found, this returns `[]`. Params that consist of a key-value(s) pair (e.g. `--output-dir DIR`, `--add-files a.txt b.txt c.txt`) should be implemented this way.
 
 ```ahk
+;                                  vvvvvvvvvv v
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-;                                  ^^^^^^^^^^ ^
-Args.GetParam("requires")  ; -> "a"
+Args.Param("requires")
+;   -> "a"
 
+;                                  vvvvvvvvvv vvvvv
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-;                                  ^^^^^^^^^^ ^^^^^
-Args.GetParams("requires")  ; -> ["a", "b", "c"]
+Args.Params("requires")
+;   -> ["a", "b", "c"]
 ```
 
-All arguments after a `--` are considered remaining args. If there are no remaining args, this returns `[]`. Arguments that should not be handled by the arg parser should be implemented this way.
+**Get arguments after `--` using `.Remaining`.** (This excludes the `--` itself.) If there are no remaining args, this returns `[]`. Arguments that should not be handled by the arg parser should be implemented this way.
 
 ```ahk
+;                                                             vv vvvvv
 ; demo.ahk install -v -v --verbose --requires a b c --dry-run -- x y z
-;                                                             ^^ ^^^^^
-Args.GetRemaining()  ; -> ["x", "y", "z"]
+Args.Remaining
+;   -> ["x", "y", "z"]
 ```
-
