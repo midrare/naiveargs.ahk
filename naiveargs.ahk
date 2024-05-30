@@ -1,8 +1,8 @@
 ; naiveargs.ahk
 ; An argument parser for autohotkey
-; Last modified: 2024/04/20
+; Last modified: 2024/05/29
 
-; Copyright (c) 2024 midrare
+; Copyright (c) 2024 midrare <midrare9@gmail.com>
 ;
 ; Permission is hereby granted, free of charge, to any person obtaining a copy
 ; of this software and associated documentation files (the "Software"), to deal
@@ -28,44 +28,42 @@
 Class NaiveArguments {
     __New(Positionals, Named, Counted, Remaining) {
         this.Positionals := Positionals || Array()
-        this.NameToValues := Named || Map()
-        this.NameToCount := Counted || Map()
         this.Remaining := Remaining || Array()
+        this._NameToValues := Named || Map()
+        this._NameToCount := Counted || Map()
     }
 
-    GetPositionals() {
-        Return this.Positionals
-    }
-
-    GetRemaining() {
-        Return this.Remaining
-    }
-
-    GetCount(Name) {
-        If (!this.NameToCount.Has(Name)) {
+    Count(Name) {
+        If (!this._NameToCount.Has(Name)) {
             Return 0
         }
-        Return this.NameToCount[Name]
+        Return this._NameToCount[Name]
     }
 
-    GetParam(Name) {
-        If (!this.NameToValues.Has(Name)
-                || this.NameToValues[Name].Length <= 0) {
-            Return
+    Param(Name, Default_ := unset) {
+        If (!this._NameToValues.Has(Name)
+        || this._NameToValues[Name].Length <= 0) {
+            If (IsSet(Default_)) {
+                Return Default_
+            }
+            Throw UnsetItemError("Param " . Name . " not found.")
         }
-        Return this.NameToValues[Name][1]
+        Return this._NameToValues[Name][1]
     }
 
-    GetParams(Name) {
-        if (!this.NameToValues.Has(Name)) {
-            Return []
+    Params(Name, Default_ := unset) {
+        if (!this._NameToValues.Has(Name)) {
+            If (IsSet(Default_)) {
+                Return Default_
+            }
+            Throw UnsetItemError("Param " . Name . " not found.")
         }
-        Return this.NameToValues[Name]
+        Return this._NameToValues[Name]
     }
 }
 
 
-NaiveParseArguments(Args) {
+ParseArguments(Args) {
     Args_ := Args.Clone()
 
     PHASE_POSITIONAL := 0

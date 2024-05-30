@@ -25,13 +25,13 @@ Argument parsing proceeds through a sequence of heuristic-based stages.
 
 
 ### Using the parser
-Import **naiveargs.ahk** and parse your arguments using `NaiveParseArguments(A_Args)`, which returns a `NaiveArguments` object.
+Import **naiveargs.ahk** and parse your arguments using `ParseArguments(A_Args)`, which returns a `NaiveArguments` object.
 
 ```ahk
 #include "%A_ScriptDir%/naiveargs.ahk"
 
 ; no setup!
-Args := NaiveParseArguments(A_Args)
+Args := ParseArguments(A_Args)
 ```
 
 **Get positionals using `.Positionals`.** If there are no positionals, this returns `[]`. Action-style params such as `install`, `uninstall` that set the "mode" for your script should be implemented this way.
