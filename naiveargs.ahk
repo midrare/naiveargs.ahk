@@ -1,6 +1,6 @@
 ; naiveargs.ahk
 ; An argument parser for autohotkey
-; Last modified: 2024/05/29
+; Last modified: 2024/06/18
 
 ; Copyright (c) 2024 midrare <midrare9@gmail.com>
 ;
@@ -40,7 +40,7 @@ Class NaiveArguments {
         Return this._NameToCount[Name]
     }
 
-    Param(Name, Default_ := unset) {
+    Param(Name, Default_ := "") {
         If (!this._NameToValues.Has(Name)
         || this._NameToValues[Name].Length <= 0) {
             If (IsSet(Default_)) {
@@ -51,8 +51,8 @@ Class NaiveArguments {
         Return this._NameToValues[Name][1]
     }
 
-    Params(Name, Default_ := unset) {
-        if (!this._NameToValues.Has(Name)) {
+    Params(Name, Default_ := Array()) {
+        If (!this._NameToValues.Has(Name)) {
             If (IsSet(Default_)) {
                 Return Default_
             }
@@ -90,7 +90,6 @@ ParseArguments(Args) {
             }
         }
 
-        ; TODO handle --no-aaa flags
         If (Phase == PHASE_FLAGS) {
             Name := ""
             Value := unset
